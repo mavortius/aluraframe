@@ -1,7 +1,6 @@
 class NegociacaoController {
     
     constructor() {
-        
         let $ = document.querySelector.bind(document);
         
         this._inputData = $('#data');
@@ -19,7 +18,6 @@ class NegociacaoController {
     }
     
     adiciona(event) {
-        
         event.preventDefault();
         this._listaNegociacoes.adiciona(this._criaNegociacao());
         this._mensagem.texto = 'Negociação adicionada com sucesso'; 
@@ -28,20 +26,16 @@ class NegociacaoController {
     
     importaNegociacoes() {
         let service = new NegociacaoService();
-        
-        service.obterNegociacoesDaSemana((erro, negociacoes) => {
-            if(erro) {
-                this._mensagem.texto = erro;
-                return;
-            }
-            
-            negociacoes.forEach(negociacao => this._listaNegociacoes.adiciona(negociacao));
-            this._mensagem.texto = 'Negociações importadas com sucesso';
-        });
+        service
+            .obterNegociacoes()
+            .then(negociacoes => negociacoes.forEach(negociacao => {
+                this._listaNegociacoes.adiciona(negociacao);
+                this._mensagem.texto = 'Negociações do período importadas'   
+            }))
+            .catch(erro => this._mensagem.texto = erro);               
     }
     
     apaga() {
-        
         this._listaNegociacoes.esvazia();
         this._mensagem.texto = 'Negociações apagadas com sucesso';
     }
